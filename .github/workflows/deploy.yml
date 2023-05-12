@@ -30,7 +30,7 @@ jobs:
           remote_host: ${{ secrets.HOST }}
           remote_port: ${{ secrets.PORT }}
           remote_user: root
-          remote_key: ${{ secrets.PASSWORD }}
+          remote_key_pass: ${{ secrets.PASSWORD }}
 
       - name: connect ssh
         uses: appleboy/ssh-action@master
