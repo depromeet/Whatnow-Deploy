@@ -40,7 +40,7 @@ jobs:
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
           script: |
-            docker login -u ${{ secrets.NCP_ACCESS_KEY }} -p ${{ secrets.NCP_SECRET_KEY }} ${{ secrets.NCP_CONTAINER_REGISTRY }}
+            echo "${{ secrets.NCP_SECRET_KEY }}" | docker login -u "${{ secrets.NCP_ACCESS_KEY }}" --password-stdin "${{ secrets.NCP_CONTAINER_REGISTRY }}"
             cd ~/src/ubuntu
             echo "start docker-compose up"
             docker compose --env-file ~/.env -f ~/src/ubuntu/docker-compose.dev.yml pull
