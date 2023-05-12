@@ -22,20 +22,15 @@ jobs:
           port: ${{ secrets.PORT }}
           script: mkdir -p ~/src/ubuntu
 
-      - name: Use SSH Key
-        uses: webfactory/ssh-agent@v0.4.1
-        with:
-          ssh-private-key: ${{ secrets.KEY }}
-
       - name: copy source via ssh key
-        uses: burnett01/rsync-deployments@5.0
+        uses: burnett01/rsync-deployments@4.1
         with:
           switches: -avzr --delete
           remote_path: ~/src/ubuntu/
           remote_host: ${{ secrets.HOST }}
           remote_port: ${{ secrets.PORT }}
           remote_user: root
-          remote_key: /root/.ssh/id_rsa
+          remote_key: ${{ secrets.KEY }}
 
       - name: connect ssh
         uses: appleboy/ssh-action@master
