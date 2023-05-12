@@ -18,7 +18,7 @@ jobs:
         with:
           host: ${{ secrets.HOST }}
           username: root
-          key: ${{ secrets.key }}
+          password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
           script: mkdir -p ~/src/ubuntu
 
@@ -30,14 +30,14 @@ jobs:
           remote_host: ${{ secrets.HOST }}
           remote_port: ${{ secrets.PORT }}
           remote_user: root
-          remote_key: ${{ secrets.KEY }}
+          remote_key: ${{ secrets.PASSWORD }}
 
       - name: connect ssh
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
           username: root
-          key: ${{ secrets.key }}
+          password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
           script: |
             docker login -u ${{ secrets.NCP_ACCESS_KEY }} -p ${{ secrets.NCP_SECRET_KEY }} ${{ secrets.NCP_CONTAINER_REGISTRY }}
