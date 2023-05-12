@@ -1,0 +1,89 @@
+name: Deployment
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+jobs:
+  deploy-develop:
+    name: Deploy(develop)
+    runs-on: ubuntu-latest
+    environment: whatnow-develop
+    steps:
+      - name: checkout
+        uses: actions/checkout@master
+
+      - name: create remote directory
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ubuntu
+          key: ${{ secrets.KEY }}
+          script: mkdir -p ~/src/ubuntu
+
+      - name: copy source via ssh key
+        uses: burnett01/rsync-deployments@4.1
+        with:
+          switches: -avzr --delete
+          remote_path: ~/src/ubuntu/
+          remote_host: ${{ secrets.HOST }}
+          remote_user: root
+          remote_key: ${{ secrets.KEY }}
+
+      - name: connect ssh
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: root
+          key: ${{ secrets.key }}
+          port: ${{ secrets.PORT }}
+          script: |
+            docker login -u ${{ secrets.NCP_ACCESS_KEY }} -p ${{ secrets.NCP_SECRET_KEY }} ${{ secrets.NCP_CONTAINER_REGISTRY }}
+            cd ~/src/ubuntu
+            echo "start docker-compose up"
+            sudo docker compose --env-file ~/.env -f ~/src/ubuntu/docker-compose.dev.yml pull
+            sudo docker compose -f ~/src/ubuntu/docker-compose.dev.yml --env-file ~/.env up --build -d
+            echo "prune images"
+            sudo docker system prune --all -f
+
+#    deploy-production:
+#      name: Deploy(production)
+#      runs-on: ubuntu-latest
+#      environment: whatnow-develop
+#      steps:
+#        - name: checkout
+#          uses: actions/checkout@master
+#
+#        - name: create remote directory
+#          uses: appleboy/ssh-action@master
+#          with:
+#            host: ${{ secrets.HOST }}
+#            username: ubuntu
+#            key: ${{ secrets.KEY }}
+#            script: mkdir -p ~/src/ubuntu
+#
+#        - name: copy source via ssh key
+#          uses: burnett01/rsync-deployments@4.1
+#          with:
+#            switches: -avzr --delete
+#            remote_path: ~/src/ubuntu/
+#            remote_host: ${{ secrets.HOST }}
+#            remote_user: root
+#            remote_key: ${{ secrets.KEY }}
+#
+#        - name: connect ssh
+#          uses: appleboy/ssh-action@master
+#          with:
+#            host: ${{ secrets.HOST }}
+#            username: root
+#            key: ${{ secrets.key }}
+#            port: ${{ secrets.PORT }}
+#            script: |
+#              docker login -u ${{ secrets.NCP_ACCESS_KEY }} -p ${{ secrets.NCP_SECRET_KEY }} ${{ secrets.NCP_CONTAINER_REGISTRY }}
+#              cd ~/src/ubuntu
+#              echo "start docker-compose up"
+#              sudo docker compose --env-file ~/.env -f ~/src/ubuntu/docker-compose.dev.yml pull
+#              sudo docker compose -f ~/src/ubuntu/docker-compose.dev.yml --env-file ~/.env up --build -d
+#              echo "prune images"
+#              sudo docker system prune --all -f
+
