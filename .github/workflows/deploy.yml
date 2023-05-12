@@ -17,8 +17,9 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
-          username: ubuntu
-          key: ${{ secrets.KEY }}
+          username: root
+          key: ${{ secrets.key }}
+          port: ${{ secrets.PORT }}
           script: mkdir -p ~/src/ubuntu
 
       - name: copy source via ssh key
@@ -27,6 +28,7 @@ jobs:
           switches: -avzr --delete
           remote_path: ~/src/ubuntu/
           remote_host: ${{ secrets.HOST }}
+          remote_port: ${{ secrets.PORT }}
           remote_user: root
           remote_key: ${{ secrets.KEY }}
 
