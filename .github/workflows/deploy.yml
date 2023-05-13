@@ -25,7 +25,7 @@ jobs:
       - name: copy source via ssh key
         uses: burnett01/rsync-deployments@4.1
         with:
-          switches: -avzr --delete
+          switches: -avzr
           remote_path: ~/src/ubuntu/
           remote_host: ${{ secrets.HOST }}
           remote_port: ${{ secrets.PORT }}
