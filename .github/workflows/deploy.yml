@@ -43,11 +43,10 @@ jobs:
             echo "${{ secrets.NCP_SECRET_KEY }}" | docker login -u "${{ secrets.NCP_ACCESS_KEY }}" --password-stdin "${{ secrets.NCP_CONTAINER_REGISTRY }}"
             cd ~/src/ubuntu
             echo "start docker-compose up"
-            docker compose --env-file ~/.env -f ~/src/ubuntu/docker-compose.dev.yml pull
-            docker compose -f ~/src/ubuntu/docker-compose.dev.yml --env-file ~/.env up --build -d
+            sudo docker compose -f ~/src/ubuntu/docker-compose.dev.yml pull
+            sudo docker compose -f ~/src/ubuntu/docker-compose.dev.yml --env-file .env up --build -d
             echo "prune images"
             sudo docker system prune --all -f
-
 #    deploy-production:
 #      name: Deploy(production)
 #      runs-on: ubuntu-latest
