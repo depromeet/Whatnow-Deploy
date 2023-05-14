@@ -87,6 +87,6 @@ jobs:
 #              echo "start docker-compose up"
 #              sudo docker compose -f ~/src/ubuntu/docker-compose.prod.yml pull
 #              sudo docker compose -f ~/src/ubuntu/docker-compose.prod.yml --env-file .env up --build -d
-              echo "prune images"
-              sudo docker system prune --all -f
+#              echo "prune images"
+#              sudo docker system prune --all -f
 
