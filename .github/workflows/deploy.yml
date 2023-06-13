@@ -44,6 +44,8 @@ jobs:
             cd ~/src/ubuntu
             echo "start docker-compose up"
             sudo docker compose -f ~/src/ubuntu/docker-compose.dev.yml pull
+            WHATNOW_VERSION=$(docker images --format "{{.Tag}}" ${{ secrets.NCP_CONTAINER_REGISTRY}}/whatnow-api)
+            sed -i "s/WHATNOW_VERSION=.*/WHATNOW_VERSION=${WHATNOW_VERSION}" .env
             sudo docker compose -f ~/src/ubuntu/docker-compose.dev.yml --env-file .env up --build -d
             echo "prune images"
             sudo docker system prune --all -f
