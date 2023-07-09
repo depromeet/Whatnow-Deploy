@@ -60,10 +60,10 @@ jobs:
           SLACK_COLOR: '#6568EA'
           SLACK_TITLE: DEVELOP Build succeeded 🎉
           SLACK_MESSAGE: |
-            \n *배포 버전* \n
+            "\n *배포 버전* \n
             ${{ needs.deploy-develop.outputs.WHATNOW_VERSION }} \n 
             \n *배포 내역* \n 
-            https://github.com/depromeet/Whatnow-Api/releases/tag/Api-v${{ needs.deploy-develop.outputs.WHATNOW_VERSION }} \n
+            https://github.com/depromeet/Whatnow-Api/releases/tag/Api-v${{ needs.deploy-develop.outputs.WHATNOW_VERSION }} \n"
 
       - name: Notify on failure
         if: ${{ failure() }}
@@ -74,7 +74,7 @@ jobs:
           SLACK_COLOR: '#FF4747'
           SLACK_TITLE: DEVELOP Build failed 🥲
           SLACK_MESSAGE: |
-            \n *배포 버전* \n
+            "\n *배포 버전* \n
             ${{ needs.deploy-develop.outputs.WHATNOW_VERSION }} \n 
             \n *배포 내역* \n 
             https://github.com/depromeet/Whatnow-Api/releases/tag/Api-v${{ needs.deploy-develop.outputs.WHATNOW_VERSION }} \n"
