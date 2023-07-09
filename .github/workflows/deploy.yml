@@ -43,12 +43,46 @@ jobs:
             echo "${{ secrets.NCP_SECRET_KEY }}" | docker login -u "${{ secrets.NCP_ACCESS_KEY }}" --password-stdin "${{ secrets.NCP_CONTAINER_REGISTRY }}"
             cd ~/src/ubuntu
             echo "start docker-compose up"
-            sudo docker compose -f ~/src/ubuntu/docker-compose.dev.yml pull
-            WHATNOW_VERSION=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep 'whatnow-api' | cut -d ':' -f 2-)
-            sed -i "s/WHATNOW_VERSION=.*/WHATNOW_VERSION=$WHATNOW_VERSION/" .env
-            sudo docker compose -f ~/src/ubuntu/docker-compose.dev.yml --env-file .env up --build -d
-            echo "prune images"
-            sudo docker system prune --all -f
+#            sudo docker compose -f ~/src/ubuntu/docker-compose.dev.yml pull
+            WHATNOW_VERSION=$(sudo docker images --format "{{.Repository}}:{{.Tag}}" | grep 'whatnow-api' | cut -d ':' -f 2-)
+            echo "::set-output name=WHATNOW_VERSION::$WHATNOW_VERSION"
+#            sed -i "s/WHATNOW_VERSION=.*/WHATNOW_VERSION=$WHATNOW_VERSION/" .env
+#            sudo docker compose -f ~/src/ubuntu/docker-compose.dev.yml --env-file .env up --build -d
+#            echo "prune images"
+#            sudo docker system prune --all -f
+  slack-notify-develop:
+    needs: [deploy-develop]
+    name: Slack Notification(develop)
+    runs-on: ubuntu-latest
+    environment: whatnow-develop
+    steps:
+      - name: Notify on success
+      - if: ${{ success() }}
+      - uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
+          SLACK_COLOR: '#6568EA'
+          SLACK_TITLE: DEVELOP Build succeeded 🎉
+          SLACK_MESSAGE: "
+          \n *배포 버전* \n
+          ${{ needs.deploy-develop.outputs.WHATNOW_VERSION }} \n 
+          \n *배포 내역* \n 
+          https://github.com/depromeet/Whatnow-Api/releases/tag/Api-v${{ needs.deploy-develop.outputs.WHATNOW_VERSION }} \n"
+      - name: Notify on failure
+        if: ${{ failure() }}
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
+          SLACK_COLOR: '#FF4747'
+          SLACK_TITLE: DEVELOP Build failed 🥲
+          SLACK_MESSAGE: "
+          \n *배포 버전* \n
+          ${{ needs.deploy-develop.outputs.WHATNOW_VERSION }} \n 
+          \n *배포 내역* \n 
+          https://github.com/depromeet/Whatnow-Api/releases/tag/Api-v${{ needs.deploy-develop.outputs.WHATNOW_VERSION }} \n"
+
 #    deploy-production:
 #      name: Deploy(production)
 #      runs-on: ubuntu-latest
