@@ -51,7 +51,7 @@ jobs:
 #            echo "prune images"
 #            sudo docker system prune --all -f
   slack-notify-develop:
-    needs: [deploy-develop]
+    needs: deploy-develop
     name: Slack Notification(develop)
     runs-on: ubuntu-latest
     environment: whatnow-develop
