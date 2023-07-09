@@ -50,7 +50,7 @@ jobs:
             sudo docker compose -f ~/src/ubuntu/docker-compose.dev.yml --env-file .env up --build -d
             echo "prune images"
             sudo docker system prune --all -f
-                 - name: Notify on success
+
       - name: Notify on success
         if: ${{ success() }}
         uses: rtCamp/action-slack-notify@v2
