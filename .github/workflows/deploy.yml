@@ -45,7 +45,7 @@ jobs:
             # echo "start docker-compose up"
             # sudo docker compose -f ~/src/ubuntu/docker-compose.dev.yml pull
             WHATNOW_VERSION=$(sudo docker images --format "{{.Repository}}:{{.Tag}}" | grep 'whatnow-api' | cut -d ':' -f 2-)
-            echo "::set-output name=WHATNOW_VERSION::$(docker images --format "{{.Repository}}:{{.Tag}}" | grep 'whatnow-api' | cut -d ':' -f 2-)"
+            echo "::set-output name=WHATNOW_VERSION::$(sudo docker images --format "{{.Repository}}:{{.Tag}}" | grep 'whatnow-api' | cut -d ':' -f 2-)"
             # sed -i "s/WHATNOW_VERSION=.*/WHATNOW_VERSION=$WHATNOW_VERSION/" .env
             # sudo docker compose -f ~/src/ubuntu/docker-compose.dev.yml --env-file .env up --build -d
             # echo "prune images"
@@ -57,13 +57,15 @@ jobs:
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
+          SLACK_USERNAME: whatnow
+          SLACK_ICON: https://image.whatnow.kr/assert/SLACK_ICON.png
           SLACK_COLOR: '#6568EA'
           SLACK_TITLE: develop 서버 deploy success 🎉
           SLACK_MESSAGE: |
             "*배포 버전*
             ${{ needs.deploy-develop.outputs.WHATNOW_VERSION }} 
             *배포 내역* 
-            https://github.com/depromeet/Whatnow-Api/releases/tag/Api-v${{ needs.deploy-develop.outputs.WHATNOW_VERSION }}"
+            https://github.com/depromeet/Whatnow-Api/releases/tag/Api-v${{ needs.deploy-develop.outputs.WHATNOW_VERSION }}
 
       - name: Notify on failure
         if: ${{ failure() }}
@@ -71,13 +73,15 @@ jobs:
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_CHANNEL: ${{ secrets.SLACK_CHANNEL }}
+          SLACK_USERNAME: whatnow
+          SLACK_ICON: https://image.whatnow.kr/assert/SLACK_ICON.png
           SLACK_COLOR: '#FF4747'
           SLACK_TITLE: develop 서버 deploy fail 😭
           SLACK_MESSAGE: |
             "*배포 버전*
             ${{ needs.deploy-develop.outputs.WHATNOW_VERSION }} 
             *배포 내역* 
-            https://github.com/depromeet/Whatnow-Api/releases/tag/Api-v${{ needs.deploy-develop.outputs.WHATNOW_VERSION }}"
+            https://github.com/depromeet/Whatnow-Api/releases/tag/Api-v${{ needs.deploy-develop.outputs.WHATNOW_VERSION }}
 
 #    deploy-production:
 #      name: Deploy(production)
