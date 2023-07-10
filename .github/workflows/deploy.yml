@@ -45,7 +45,9 @@ jobs:
             # echo "start docker-compose up"
             # sudo docker compose -f ~/src/ubuntu/docker-compose.dev.yml pull
             WHATNOW_VERSION=$(sudo docker images --format "{{.Repository}}:{{.Tag}}" | grep 'whatnow-api' | cut -d ':' -f 2-)
-            echo "::set-output name=WHATNOW_VERSION::$(sudo docker images --format "{{.Repository}}:{{.Tag}}" | grep 'whatnow-api' | cut -d ':' -f 2-)"
+            echo "WHATNOW_VERSION"
+            echo $WHATNOW_VERSION
+            echo "::set-output name=WHATNOW_VERSION::$WHATNOW_VERSION"
             # sed -i "s/WHATNOW_VERSION=.*/WHATNOW_VERSION=$WHATNOW_VERSION/" .env
             # sudo docker compose -f ~/src/ubuntu/docker-compose.dev.yml --env-file .env up --build -d
             # echo "prune images"
